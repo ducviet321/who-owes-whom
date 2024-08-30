@@ -1,0 +1,176 @@
+:root {
+    --bg-primary: #87ff77;
+    --color-primary: #000000;
+}
+
+body {
+    font-family: 'Monaco', monospace;
+    background-color: rgb(240, 240, 240);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    ;
+}
+
+h1,
+h2 {
+    margin: 10px 0;
+}
+
+input {
+    width: 100%;
+    font-family: 'Monaco', monospace;
+    font-size: 2em;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
+button {
+    width: 100%;
+    min-height: 40px;
+    /* padding: 5px 8px; */
+    margin: 5px 0;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(34, 34, 34);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--color-primary);
+}
+
+td>button {
+    min-width: 50px;
+    height: 30px;
+    min-height: 0;
+}
+
+#summary,
+#spending {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+#summaryContent {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: gray;
+}
+
+.add-btn {
+    background: var(--bg-primary);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    font-size: 1em;
+}
+
+#addPersonBtn {
+    background: var(--bg-primary);
+    color: var(--color-primary);
+}
+
+.total {
+    border: 2px solid var(--color-primary);
+    font-weight: bold;
+}
+
+/*   Open state of the dialog  */
+dialog[open] {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+/*   Closed state of the dialog   */
+dialog {
+    position: relative;
+    opacity: 0;
+    transform: scaleY(0);
+    transition: all 0.2s allow-discrete;
+    overflow: hidden;
+}
+
+/*   Before-open state  */
+/* Needs to be after the previous dialog[open] rule to take effect,
+      as the specificity is the same */
+@starting-style {
+    dialog[open] {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+/* Transition the :backdrop when the dialog modal is promoted to the top layer */
+dialog::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+    transition: all 0.7s allow-discrete;
+}
+
+dialog[open]::backdrop {
+    background-color: rgb(0 0 0 / 25%);
+}
+
+/* This starting-style rule cannot be nested inside the above selector
+  because the nesting selector cannot represent pseudo-elements. */
+
+@starting-style {
+    dialog[open]::backdrop {
+        background-color: rgb(0 0 0 / 0%);
+    }
+}
+
+
+.dialog-content {
+    background-color: white;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+}
+
+.amount-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.total-amount {
+    font-size: 5em;
+    margin: 20px 0;
+    text-align: right;
+}
+
+#cancelBtn {
+    position: absolute;
+    top: -12px;
+    right: -2px;
+    width: auto;
+}
+
+#payBtn {
+    background-color: var(--bg-primary);
+    color: var(--color-primary);
+}
+
+#qrDialog {
+    height: 100dvh;
+}
+
+#qrImage {
+    width: auto;
+    height: 100%;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chia Cơm</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="container">
+		<h2>Chia Cơm hiện lên và nói</h2>
+		
+		<section id="summary">
+			<div id="summaryContent"></div>
+		</section>
+		
+		<table id="spending">
+			<tbody id="spendingList"></tbody>
+		</table>
+
+		<button id="addPersonBtn">Thêm con nợ</button>
+		<button id="resetBtn">Xí xoá hết nợ</button>
+
+		<dialog id="inputDialog">
+			<input id="personInput" type="text" placeholder="Điền tên con nợ">
+			<div class="amount-buttons">
+				<button class="amount-btn" data-amount="5000">+5k</button>
+				<button class="amount-btn" data-amount="30000">+30k</button>
+				<button class="amount-btn" data-amount="40000">+40k</button>
+			</div>
+			<button id="clearBtn">Xin đi lại</button>
+			<div class="total-amount">=0k</div>
+			<div class="dialog-actions">
+				<button id="cancelBtn">X</button>
+				<button id="payBtn">Trả nè</button>
+			</div>
+		</dialog>
+
+		<dialog id="qrDialog">
+			<img id="qrImage" src="" alt="">
+		</dialog>
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>
