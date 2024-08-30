@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             spendingItem.querySelector('.qr-btn').addEventListener('click', () => {
-                document.getElementById('qrDialog').showModal();
                 normalizedName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 const bankInfo = banks[normalizedName];
                 if (!bankInfo) {
@@ -48,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 document.getElementById('qrImage').src = `https://img.vietqr.io/image/${bankInfo.bank}-${bankInfo.number}-compact2.jpg?amount=${amount}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${bankInfo.name}`;
+                document.getElementById('qrDialog').showModal();
             });
             
             spendingItem.querySelector('.remove-btn').addEventListener('click', () => {

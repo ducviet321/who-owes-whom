@@ -1,4 +1,4 @@
-# who-owes-whom 
+# who-owes-whom (Vietnamese 🇻🇳)
 Web Tool to track money spending and tell you who owes whom. Support Vietnamese QR Banking for quick paying.
 
 Simple HTML/CSS/JavaScript, store data in web's local storage
