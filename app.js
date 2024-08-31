@@ -143,9 +143,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         qrDialog.showModal();
                     });
 
-                    spending[name].amount += amountOwed;
-                    spending[creditor].amount -= amountOwed;
-
+                    // spending[name].amount += amountOwed;
+                    // spending[creditor].amount -= amountOwed;
                     summaryContent.appendChild(summaryItem);
                 }
             }
@@ -205,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resetBtn.addEventListener('click', () => {
         if (confirm('Chắc chứ anh bạn?')) {
             localStorage.clear();
+            spending = {};
             loadSpending();
         }
     });
