@@ -28,8 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const spendingItem = document.createElement('tr');
             spendingItem.className = 'spending-item';
 
-            console.log(name, person, person.amount, person.amount== true)
-
             spendingItem.innerHTML = `
                 <td>${name}</td>
                 <td class="amount">
@@ -77,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (accountNumber === null) return;
 
         try {
-            const response = await fetch(`https://img.vietqr.io/image/${bankName}-${name}-compact2.jpg?amount=${10000}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${accountNumber}`);
+            const response = await fetch(`https://img.vietqr.io/image/${bankName}-${accountNumber}-compact2.jpg?amount=${10000}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${name}`);
             if (!response.ok) {
                 alert('Ngân hàng méo trả lời:', response.ok);
             }
@@ -139,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         
                         bankInfo = spending[name];
-                        qrImage.src = `https://img.vietqr.io/image/${bankInfo.bank}-${name}-compact2.jpg?amount=${amountOwed}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${bankInfo.accountName}`;
+                        qrImage.src = `https://img.vietqr.io/image/${bankInfo.bank}-${bankInfo.accountNumber}-compact2.jpg?amount=${amountOwed}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${name}`;
                         qrDialog.showModal();
                     });
 
