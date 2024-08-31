@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateSummary() {
         const averagePayment = Object.values(spending).reduce((a, b) => a + b.amount, 0) / Object.keys(spending).length;
-        let summary = '';
+        summaryContent.innerHTML = "";
 
         for (const [name, person] of Object.entries(spending)) {
             const balance = (person.amount || 0) - averagePayment;

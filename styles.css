@@ -213,11 +213,20 @@ dialog[open]::backdrop {
 }
 
 #qrDialog {
-    height: 100dvh;
+    height: 80dvh;
     min-width: 100px;
 }
 
 #qrImage {
-    width: auto;
-    height: 100%;
+    width: 80dvw;
+    height: auto;
+}
+
+@media (min-aspect-ratio: 1/1) {
+    #qrImage {
+        width: auto;
+        height: 80dvh;
+        /* Allow the image to adjust its height based on the screen */
+        /* Make the image full width of the screen when width > height */
+    }
 }
