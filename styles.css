@@ -14,7 +14,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100dvh;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .container {
@@ -181,7 +181,7 @@ dialog[open]::backdrop {
     overflow: hidden
 }
 
-.progress > .fill {
+.progress>.fill {
     background: var(--bg-primary);
     height: 100%;
 }
