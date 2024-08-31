@@ -10,9 +10,9 @@
 	<div class="container">
 		<h2>Chia Cơm hiện lên và nói</h2>
 		
-		<section id="summary">
-			<div id="summaryContent"></div>
-		</section>
+		<table id="summary">
+			<tbody id="summaryContent"></tbody>
+		</table>
 		
 		<table id="spending">
 			<tbody id="spendingList"></tbody>
@@ -22,7 +22,7 @@
 		<button id="resetBtn">Xí xoá hết nợ</button>
 
 		<dialog id="inputDialog">
-			<input id="personInput" type="text" placeholder="Điền tên con nợ">
+			<input id="personInput" type="text" placeholder="Điền tên con nợ", autocomplete="off">
 			<div class="amount-buttons">
 				<button class="amount-btn" data-amount="5000">+5k</button>
 				<button class="amount-btn" data-amount="30000">+30k</button>

@@ -1,5 +1,6 @@
 :root {
-    --bg-primary: #87ff77;
+    --bg-primary: #c3f80c;
+    --bg-secondary: #f2f3f5;
     --color-primary: #000000;
 }
 
@@ -12,7 +13,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
     font-size: 20px;
 }
 
@@ -21,9 +22,8 @@ body {
     max-width: 400px;
     padding: 20px;
     background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    ;
+    box-shadow: 0px 8px 50px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
 }
 
 h1,
@@ -38,27 +38,36 @@ input {
     border-top: 0;
     border-left: 0;
     border-right: 0;
+    border-bottom: 2px solid #f2f3f5;
+}
+
+input::focus-visible {
+    width: 100%;
+    font-family: 'Monaco', monospace;
+    font-size: 2em;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
 }
 
 button {
     width: 100%;
     min-height: 40px;
-    /* padding: 5px 8px; */
     margin: 5px 0;
     border-radius: 10px;
     border: none;
     cursor: pointer;
-    background-color: rgb(34, 34, 34);
-    color: white;
+    background-color: rgb(242 243 245);
+    color: #0a0a0a;
     font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--color-primary);
+    box-shadow: 0 4px 12px 4px rgb(0 0 0 / 0%);
 }
 
 td>button {
     min-width: 50px;
     height: 30px;
     min-height: 0;
+    width: auto;
 }
 
 #summary,
@@ -69,15 +78,14 @@ td>button {
 
 #summaryContent {
     font-weight: bold;
-    font-size: 1.5em;
-    color: gray;
+    font-size: 1.2em;
+    color: #9a9a9a;
 }
 
 .add-btn {
     background: var(--bg-primary);
     color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-    font-size: 1em;
+    font-size: .8em;
 }
 
 #addPersonBtn {
@@ -94,6 +102,7 @@ td>button {
 dialog[open] {
     opacity: 1;
     transform: scaleY(1);
+    display: flex;
 }
 
 /*   Closed state of the dialog   */
@@ -103,6 +112,11 @@ dialog {
     transform: scaleY(0);
     transition: all 0.2s allow-discrete;
     overflow: hidden;
+    border: none;
+    border-radius: 8px;
+    /* display: flex; */
+    flex-direction: column;
+    gap: 1em;
 }
 
 /*   Before-open state  */
@@ -127,13 +141,11 @@ dialog[open]::backdrop {
 
 /* This starting-style rule cannot be nested inside the above selector
   because the nesting selector cannot represent pseudo-elements. */
-
 @starting-style {
-    dialog[open]::backdrop {
+    dialog[open]: :backdrop {
         background-color: rgb(0 0 0 / 0%);
     }
 }
-
 
 .dialog-content {
     background-color: white;
@@ -143,22 +155,56 @@ dialog[open]::backdrop {
     text-align: center;
 }
 
+.amount {
+    width: 150px;
+    text-align: right;
+    position: relative;
+    padding-right: 10px;
+}
+
+.amount>span {
+    position: relative;
+    z-index: 2;
+}
+
+.progress {
+    width: 100%;
+    height: 80%;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 5px;
+    border: none;
+    color: var(--bg-primary);
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    overflow: hidden
+}
+
+.progress > .fill {
+    background: var(--bg-primary);
+    height: 100%;
+}
+
 .amount-buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end;
+    gap: .5em;
 }
 
 .total-amount {
     font-size: 5em;
-    margin: 20px 0;
+    line-height: 0.5em;
     text-align: right;
 }
 
 #cancelBtn {
     position: absolute;
-    top: -12px;
+    top: -6px;
     right: -2px;
-    width: auto;
+    width: 60px;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #payBtn {
@@ -168,6 +214,7 @@ dialog[open]::backdrop {
 
 #qrDialog {
     height: 100dvh;
+    min-width: 100px;
 }
 
 #qrImage {

@@ -1,53 +1,51 @@
-const banks = {
-    "vit": {name: "HOANG DUC VIET", bank: "tpbank", number: "0399767192"},
-}
+let spending = JSON.parse(localStorage.getItem('spending')) || {
+    "vit": {amount: 0, bank: "tpbank", accountNumber: "0399767192"},
+};
 
 document.addEventListener('DOMContentLoaded', function() {
-    const spendingList = document.getElementById('spendingList');
-    const summaryContent = document.getElementById('summaryContent');
-    const addPersonBtn = document.getElementById('addPersonBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const inputDialog = document.getElementById('inputDialog');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const payBtn = document.getElementById('payBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const personInput = document.getElementById('personInput');
+    const getId = document.getElementById.bind(document);
+    const spendingList = getId('spendingList');
+    const summaryContent = getId('summaryContent');
+    const addPersonBtn = getId('addPersonBtn');
+    const resetBtn = getId('resetBtn');
+    const inputDialog = getId('inputDialog');
+    const cancelBtn = getId('cancelBtn');
+    const payBtn = getId('payBtn');
+    const clearBtn = getId('clearBtn');
+    const personInput = getId('personInput');
     const totalAmountElem = document.querySelector('.total-amount');
+    const qrImage = getId('qrImage');
+    const qrDialog = getId('qrDialog');
     let currentAmount = 0;
-    let editPerson = null;
 
     function loadSpending() {
-        const spending = JSON.parse(localStorage.getItem('spending') || '{}');
         spendingList.innerHTML = '';
-        let total = 0;
+        let total = Object.values(spending).reduce((a, b) => a + (b.amount || 0), 0);
 
-        for (const [name, amount] of Object.entries(spending)) {
-            total += amount;
+        console.table(spending)
+
+        for (const [name, person] of Object.entries(spending)) {
             const spendingItem = document.createElement('tr');
             spendingItem.className = 'spending-item';
+
+            console.log(name, person, person.amount, person.amount== true)
+
             spendingItem.innerHTML = `
                 <td>${name}</td>
-                <td style="text-align: right">${(amount / 1000).toFixed(0)}k</td>
+                <td class="amount">
+                <span>${person.amount ? (person.amount / 1000).toFixed(0) : 0}k</span>
+                <div class="progress">
+                    <div class="fill" style="width: ${person.amount ? (person.amount / total) * 100 : 0}%"></div>
+                </div>
+                </td>
                 <td class="amount-buttons">
-                    <button class="add-btn" style="width: 40px;">+</button>
-                    <button class="qr-btn" style="width: 40px;">QR</button>
+                    <button class="add-btn" style="width: 40px;">Chi</button>
                     <button class="remove-btn" style="width: 40px;">X</button>
                 </td>
             `;
             
             spendingItem.querySelector('.add-btn').addEventListener('click', () => {
                 openDialog(name);
-            });
-
-            spendingItem.querySelector('.qr-btn').addEventListener('click', () => {
-                normalizedName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                const bankInfo = banks[normalizedName];
-                if (!bankInfo) {
-                    alert('Bank information not found.');
-                    return;
-                }
-                document.getElementById('qrImage').src = `https://img.vietqr.io/image/${bankInfo.bank}-${bankInfo.number}-compact2.jpg?amount=${amount}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${bankInfo.name}`;
-                document.getElementById('qrDialog').showModal();
             });
             
             spendingItem.querySelector('.remove-btn').addEventListener('click', () => {
@@ -62,39 +60,96 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const totalDiv = document.createElement('tr');
         totalDiv.className = 'total';
-        totalDiv.innerHTML = `<td>Tổng</td><td style="text-align: right">${(total / 1000).toFixed(0)}k</td><td><button style="opacity: 0"/></td>`;
+        totalDiv.innerHTML = `<td>Tổng</td><td class="amount">${(total / 1000).toFixed(0)}k</td><td><button style="opacity: 0"/></td>`;
         spendingList.appendChild(totalDiv);
 
         updateSummary();
     }
 
-    document.getElementById('qrImage').addEventListener('click', () => {
-        document.getElementById('qrDialog').close();
-    });
+    async function addBank(name, bankName="", accountNumber="") {
+        bankName = prompt('Chưa có thông tin bank nha 😏 Cho xin tên ngân hàng (Viết liền không dấu):', bankName);
+        if (bankName === null) return;
+        
+        // accountName = prompt('Tên tài khoản (Viết hoa không dấu):', accountName);
+        // if (accountName === null) return; // User cancelled
 
-    function updateSummary() {
-        const spending = JSON.parse(localStorage.getItem('spending') || '{}');
-        const averagePayment = Object.values(spending).reduce((a, b) => a + b, 0) / Object.keys(spending).length;
-        let summary = '';
+        accountNumber = prompt('Số tài khoản:', accountNumber);
+        if (accountNumber === null) return;
 
-        for (const [name, amount] of Object.entries(spending)) {
-            const balance = amount - averagePayment;
-            if (balance < 0) {
-                for (const [creditor, creditorAmount] of Object.entries(spending)) {
-                    const creditorBalance = creditorAmount - averagePayment;
-                    if (creditorBalance > 0) {
-                        const amountOwed = Math.min(-balance, creditorBalance);
-                        if (amountOwed > 0) {
-                            summary += `${name} nợ ${creditor} ${(amountOwed / 1000).toFixed(0)}k<br>`;
-                            spending[name] += amountOwed;
-                            spending[creditor] -= amountOwed;
-                        }
+        try {
+            const response = await fetch(`https://img.vietqr.io/image/${bankName}-${name}-compact2.jpg?amount=${10000}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${accountNumber}`);
+            if (!response.ok) {
+                alert('Ngân hàng méo trả lời:', response.ok);
+            }
+
+            const contentType = response.headers.get('content-type');
+
+            if (contentType !== 'image/png') {
+                const text = await response.text();
+                if (text) {
+                    if (confirm(`Nhập sai rồi con lợn, ngân hàng nó bảo là ${text}. Nhập lại khum?`)) {
+                        return addBank(name, bankName, accountNumber);
                     }
                 }
             }
+                
+            spending[name] = {bank: bankName, accountNumber: accountNumber};
+            localStorage.setItem('spending', JSON.stringify(spending));
+            return true;
+        } catch (error) {
+            alert('Lỗi méo gì ấy:', error.message);
         }
 
-        summaryContent.innerHTML = summary;
+        return false;
+    }
+
+    qrImage.addEventListener('click', () => {
+        qrDialog.close();
+    });
+
+    function updateSummary() {
+        const averagePayment = Object.values(spending).reduce((a, b) => a + b.amount, 0) / Object.keys(spending).length;
+        let summary = '';
+
+        for (const [name, person] of Object.entries(spending)) {
+            const balance = (person.amount || 0) - averagePayment;
+            if (balance > 0) continue;
+
+            for (const [creditor, creditorPerson] of Object.entries(spending)) {
+                const creditorBalance = (creditorPerson.amount || 0) - averagePayment;
+                if (creditorBalance == 0) continue;
+
+                const amountOwed = Math.min(-balance, creditorBalance);
+                if (amountOwed > 0) {
+                    const summaryItem = document.createElement('tr');
+                    
+                    summaryItem.innerHTML = `<tr>
+                        <td>${name} nợ ${creditor} ${(amountOwed).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}đ</td>
+                        <td class="amount-buttons"><button class="qr-btn" style="width: 40px;">QR</button></td>
+                    </tr>`;
+
+                    summaryItem.querySelector('.qr-btn').addEventListener('click', async () => {
+                        // normalizedName = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        let bankInfo = spending[name];
+                        
+                        if (!bankInfo || !bankInfo.bank) {
+                            if (!await addBank(name)) {
+                                return;
+                            }
+                        }
+                        
+                        bankInfo = spending[name];
+                        qrImage.src = `https://img.vietqr.io/image/${bankInfo.bank}-${name}-compact2.jpg?amount=${amountOwed}&addInfo=dong%20gop%20quy%20cuu%20doi&accountName=${bankInfo.accountName}`;
+                        qrDialog.showModal();
+                    });
+
+                    spending[name].amount += amountOwed;
+                    spending[creditor].amount -= amountOwed;
+
+                    summaryContent.appendChild(summaryItem);
+                }
+            }
+        }
     }
 
     const openDialog = (name = '') => {
@@ -111,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function removePerson(name) {
-        const spending = JSON.parse(localStorage.getItem('spending') || '{}');
         delete spending[name];
         localStorage.setItem('spending', JSON.stringify(spending));
         loadSpending();
@@ -138,8 +192,8 @@ document.addEventListener('DOMContentLoaded', function() {
     payBtn.addEventListener('click', () => {
         const person = personInput.value.trim();
         if (person) {
-            const spending = JSON.parse(localStorage.getItem('spending') || '{}');
-            spending[person] = (spending[person] || 0) + currentAmount;
+            if (!spending[person]) spending[person] = { amount: 0 };
+            spending[person].amount += currentAmount;
             localStorage.setItem('spending', JSON.stringify(spending));
             loadSpending();
             closeDialog();
@@ -156,23 +210,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     loadSpending();
-
-    function generateTPBankQRCode(amount, accountNumber, accountName, transactionContent) {
-        const tpBankQRCodeData = `
-            {"bankCode":"TPBank","accountNumber":"${accountNumber}","accountName":"${accountName}","amount":"${amount}","transactionContent":"${transactionContent}"}
-        `;
-        
-        const qrcode = new QRCode(document.getElementById("qrcode"), {
-            text: tpBankQRCodeData,
-            width: 256,
-            height: 256,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    }
-    
-    // Example usage:
-    generateTPBankQRCode("1000000", "0399767192", "Hoang Duc Viet", "Tra no com cho");
-    
 });
